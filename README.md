@@ -27,7 +27,11 @@ poetry add git+https://github.com/jirpok/scrapy-selenium4.git
 
 ```python
 SELENIUM_DRIVER_NAME = "firefox"
-SELENIUM_DRIVER_ARGUMENTS=["-headless"]
+SELENIUM_DRIVER_ARGUMENTS = ["-headless"]
+SELENIUM_BROWSER_FF_PREFS = {
+    "javascript.enabled": False,     # disable JavaScript
+    "permissions.default.image": 2,  # block all images from loading
+}
 ```
 
 [Firefox/CommandLineOptions](https://wiki.mozilla.org/Firefox/CommandLineOptions)
