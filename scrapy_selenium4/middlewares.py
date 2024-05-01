@@ -1,4 +1,4 @@
-from typing import List, Self
+from typing import Any, List, Self, Dict
 from scrapy import signals
 from scrapy.exceptions import NotConfigured
 from scrapy.http import HtmlResponse
@@ -14,6 +14,7 @@ class SeleniumMiddleware:
         driver_name: str,
         driver_arguments: List[str] | None = None,
         driver_executable_path: str | None = None,
+        browser_ff_prefs: Dict[str, Any] | None = None,
         browser_executable_path: str | None = None,
         command_executor: str | None = None,
     ) -> None:
@@ -30,6 +31,9 @@ class SeleniumMiddleware:
         driver_executable_path : str | None, optional
             Path to driver executable binary. Mapped to
             `SELENIUM_DRIVER_EXECUTABLE_PATH`. By default `None`.
+        browser_ff_prefs : Dict[str, Any] | None, optional
+            Firefox preferences. Mapped to `SELENIUM_BROWSER_FF_PREFS`.
+            By default `None`.
         browser_executable_path : str | None, optional
             Path to browser executable binary. Mapped to
             `SELENIUM_BROWSER_EXECUTABLE_PATH`. By default `None`.
@@ -72,6 +76,10 @@ class SeleniumMiddleware:
         for arg in driver_arguments:
             options.add_argument(arg)
 
+        # SELENIUM_BROWSER_FF_PREFS
+        for pref, value in browser_ff_prefs.items():
+            options.set_preference(pref, value)
+
         # SELENIUM_BROWSER_EXECUTABLE_PATH
         if browser_executable_path:
             options.binary_location = browser_executable_path
@@ -98,6 +106,7 @@ class SeleniumMiddleware:
         driver_name = crawler.settings.get("SELENIUM_DRIVER_NAME")
         driver_arguments = crawler.settings.get("SELENIUM_DRIVER_ARGUMENTS")
         driver_executable_path = crawler.settings.get("SELENIUM_DRIVER_EXECUTABLE_PATH")
+        browser_ff_prefs = crawler.settings.get("SELENIUM_BROWSER_FF_PREFS")
         browser_executable_path = crawler.settings.get(
             "SELENIUM_BROWSER_EXECUTABLE_PATH"
         )
@@ -112,12 +121,16 @@ class SeleniumMiddleware:
                 "or SELENIUM_COMMAND_EXECUTOR must be set, but not both."
             )
 
+        if browser_ff_prefs and driver_name != "firefox":
+            raise NotConfigured("SELENIUM_BROWSER_FF_PREFS is Firefox-only.")
+
         middleware = cls(
             driver_name=driver_name,
+            driver_arguments=driver_arguments,
             driver_executable_path=driver_executable_path,
+            browser_ff_prefs=browser_ff_prefs,
             browser_executable_path=browser_executable_path,
             command_executor=command_executor,
-            driver_arguments=driver_arguments,
         )
 
         crawler.signals.connect(middleware.spider_closed, signals.spider_closed)
