@@ -27,7 +27,7 @@ poetry add git+https://github.com/jirpok/scrapy-selenium4.git
 
 ```python
 SELENIUM_DRIVER_NAME = "firefox"
-SELENIUM_DRIVER_ARGUMENTS=['-headless']
+SELENIUM_DRIVER_ARGUMENTS=["-headless"]
 ```
 
 [Firefox/CommandLineOptions](https://wiki.mozilla.org/Firefox/CommandLineOptions)
@@ -36,7 +36,7 @@ SELENIUM_DRIVER_ARGUMENTS=['-headless']
 
 ```python
 SELENIUM_DRIVER_NAME = "chrome"
-SELENIUM_DRIVER_ARGUMENTS=['--headless=new']
+SELENIUM_DRIVER_ARGUMENTS=["--headless=new"]
 ```
 
 ## Optional settings
@@ -61,7 +61,7 @@ SELENIUM_DRIVER_EXECUTABLE_PATH = "path/to/driver/executable"
 ### Specify remote driver
 
 ```python
-SELENIUM_COMMAND_EXECUTOR = 'http://localhost:4444/wd/hub'
+SELENIUM_COMMAND_EXECUTOR = "http://localhost:4444/wd/hub"
 ```
 
 (Do not set `SELENIUM_DRIVER_EXECUTABLE_PATH` along with
@@ -71,7 +71,7 @@ SELENIUM_COMMAND_EXECUTOR = 'http://localhost:4444/wd/hub'
 
 ```python
 DOWNLOADER_MIDDLEWARES = {
-    'scrapy_selenium.SeleniumMiddleware': 800
+    "scrapy_selenium4.SeleniumMiddleware": 800
 }
 ```
 
@@ -83,15 +83,15 @@ Use the `scrapy_selenium4.SeleniumRequest` instead of the scrapy built-in
 ```python
 from scrapy_selenium4 import SeleniumRequest
 
-yield SeleniumRequest(url=url, callback=self.parse_result)
+yield SeleniumRequest(url=url, callback=self.parse)
 ```
 
 Such request will have an additional `meta` key `driver` containing the Selenium
 driver with the request processed.
 
 ```python
-def parse_result(self, response):
-    print(response.request.meta['driver'].title)
+def parse(self, response):
+    print(response.request.meta["driver"].title)
 ```
 
 ## Additional arguments
@@ -107,9 +107,9 @@ from selenium.webdriver.support import expected_conditions as EC
 
 yield SeleniumRequest(
     url=url,
-    callback=self.parse_result,
+    callback=self.parse,
     wait_time=10,
-    wait_until=EC.element_to_be_clickable((By.ID, 'some_id'))
+    wait_until=EC.element_to_be_clickable((By.ID, "some_id"))
 )
 ```
 
@@ -121,13 +121,13 @@ the response `meta`.
 ```python
 yield SeleniumRequest(
     url=url,
-    callback=self.parse_result,
+    callback=self.parse,
     screenshot=True
 )
 
-def parse_result(self, response):
-    with open('image.png', 'wb') as image_file:
-        image_file.write(response.meta['screenshot'])
+def parse(self, response):
+    with open("image.png", "wb") as image_file:
+        image_file.write(response.meta["screenshot"])
 ```
 
 ### `script`
@@ -137,7 +137,7 @@ Execute custom JavaScript code.
 ```python
 yield SeleniumRequest(
     url=url,
-    callback=self.parse_result,
-    script='window.scrollTo(0, document.body.scrollHeight);',
+    callback=self.parse,
+    script="window.scrollTo(0, document.body.scrollHeight);",
 )
 ```
