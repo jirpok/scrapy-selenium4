@@ -29,12 +29,37 @@ poetry add git+https://github.com/jirpok/scrapy-selenium4.git
 SELENIUM_DRIVER_NAME = "firefox"
 SELENIUM_DRIVER_ARGUMENTS = ["-headless"]
 SELENIUM_BROWSER_FF_PREFS = {
-    "javascript.enabled": False,     # disable JavaScript
-    "permissions.default.image": 2,  # block all images from loading
+    "javascript.enabled": False,    # disable JavaScript
+    "permissions.default.image": 2  # block all images from loading
 }
 ```
 
 [Firefox/CommandLineOptions](https://wiki.mozilla.org/Firefox/CommandLineOptions)
+
+### Proxy settings
+
+#### SOCKS5
+
+```python
+SELENIUM_BROWSER_FF_PREFS = {
+    "network.proxy.type": 1,
+    "network.proxy.socks_remote_dns": True,
+    "network.proxy.socks": "<HOST>",
+    "network.proxy.socks_port": <PORT>
+}
+```
+
+#### HTTP(S)
+
+```python
+"SELENIUM_BROWSER_FF_PREFS": {
+    "network.proxy.type": 1,
+    "network.proxy.http": "<HOST>",
+    "network.proxy.http_port": <PORT>,
+    "network.proxy.ssl": "<HOST>",
+    "network.proxy.ssl_port": <PORT>
+}
+```
 
 ## Chrome
 
