@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Self
 from scrapy import signals
 from scrapy.exceptions import NotConfigured
 from scrapy.http import HtmlResponse
@@ -26,16 +26,16 @@ class SeleniumMiddleware:
             `edge`). Mapped to `SELENIUM_DRIVER_NAME`.
         driver_arguments : List[str] | None, optional
             A list of arguments for `WebDriver` initialization. Mapped
-            to `SELENIUM_DRIVER_ARGUMENTS`, by default `None`.
+            to `SELENIUM_DRIVER_ARGUMENTS`. By default `None`.
         driver_executable_path : str | None, optional
             Path to driver executable binary. Mapped to
-            `SELENIUM_DRIVER_EXECUTABLE_PATH`, by default `None`
+            `SELENIUM_DRIVER_EXECUTABLE_PATH`. By default `None`.
         browser_executable_path : str | None, optional
             Path to browser executable binary. Mapped to
-            `SELENIUM_BROWSER_EXECUTABLE_PATH`, by default `None`
+            `SELENIUM_BROWSER_EXECUTABLE_PATH`. By default `None`.
         command_executor : str | None, optional
             Selenium remote server endpoint. Mapped to
-            `SELENIUM_COMMAND_EXECUTOR`, by default `None`.
+            `SELENIUM_COMMAND_EXECUTOR`. By default `None`.
         """
 
         # SELENIUM_DRIVER_NAME
@@ -92,7 +92,7 @@ class SeleniumMiddleware:
             self.driver = WebDriver(options, service)
 
     @classmethod
-    def from_crawler(cls, crawler):
+    def from_crawler(cls, crawler) -> Self:
         """Initialize middleware."""
 
         driver_name = crawler.settings.get("SELENIUM_DRIVER_NAME")
@@ -106,7 +106,7 @@ class SeleniumMiddleware:
         if driver_name is None:
             raise NotConfigured("SELENIUM_DRIVER_NAME must be set.")
 
-        if driver_executable_path is not None and command_executor is not None:
+        if driver_executable_path and command_executor:
             raise NotConfigured(
                 "Either SELENIUM_DRIVER_EXECUTABLE_PATH "
                 "or SELENIUM_COMMAND_EXECUTOR must be set, but not both."
@@ -123,7 +123,7 @@ class SeleniumMiddleware:
         crawler.signals.connect(middleware.spider_closed, signals.spider_closed)
         return middleware
 
-    def process_request(self, request, spider):
+    def process_request(self, request, spider) -> None | HtmlResponse:
         """Process request."""
 
         if not isinstance(request, SeleniumRequest):
@@ -152,6 +152,6 @@ class SeleniumMiddleware:
             self.driver.current_url, body=body, encoding="utf-8", request=request
         )
 
-    def spider_closed(self):
+    def spider_closed(self) -> None:
         """Shutdown the driver when spider is closed."""
         self.driver.quit()

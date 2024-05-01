@@ -14,7 +14,7 @@ class SeleniumRequest(Request):
         script: str | None = None,
         *args,
         **kwargs
-    ):
+    ) -> None:
         """Initialize new Selenium request.
 
         Parameters
