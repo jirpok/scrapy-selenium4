@@ -73,12 +73,14 @@ class SeleniumMiddleware:
         options = Options()
 
         # SELENIUM_DRIVER_ARGUMENTS
-        for arg in driver_arguments:
-            options.add_argument(arg)
+        if driver_arguments:
+            for arg in driver_arguments:
+                options.add_argument(arg)
 
         # SELENIUM_BROWSER_FF_PREFS
-        for pref, value in browser_ff_prefs.items():
-            options.set_preference(pref, value)
+        if browser_ff_prefs:
+            for pref, value in browser_ff_prefs.items():
+                options.set_preference(pref, value)
 
         # SELENIUM_BROWSER_EXECUTABLE_PATH
         if browser_executable_path:
