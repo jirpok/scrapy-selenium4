@@ -170,3 +170,11 @@ yield SeleniumRequest(
     script="window.scrollTo(0, document.body.scrollHeight);",
 )
 ```
+
+# Dev
+
+Run tests
+
+```shell
+pytest
+```
