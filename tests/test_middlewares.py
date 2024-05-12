@@ -13,7 +13,7 @@ class SeleniumMiddlewareTestCase(BaseScrapySeleniumTestCase):
     def setUpClass(cls):
         """Initialize middleware."""
         super().setUpClass()
-        crawler = Crawler(spidercls=cls.spider_klass, settings=cls.settings)
+        crawler = Crawler(spidercls=cls.spider_class, settings=cls.settings)
         cls.selenium_middleware = SeleniumMiddleware.from_crawler(crawler)
 
     @classmethod
@@ -25,7 +25,7 @@ class SeleniumMiddlewareTestCase(BaseScrapySeleniumTestCase):
     def test_from_crawler_initializes_driver(self):
         """The `from_crawler` method should initialize the Selenium
         driver."""
-        crawler = Crawler(spidercls=self.spider_klass, settings=self.settings)
+        crawler = Crawler(spidercls=self.spider_class, settings=self.settings)
         selenium_middleware = SeleniumMiddleware.from_crawler(crawler)
 
         # the driver must be initialized
@@ -39,7 +39,7 @@ class SeleniumMiddlewareTestCase(BaseScrapySeleniumTestCase):
 
     def test_spider_closed_closes_driver(self):
         """The `spider_closed` method should close the Selenium driver."""
-        crawler = Crawler(spidercls=self.spider_klass, settings=self.settings)
+        crawler = Crawler(spidercls=self.spider_class, settings=self.settings)
         selenium_middleware = SeleniumMiddleware.from_crawler(crawler)
 
         with patch.object(selenium_middleware.driver, "quit") as mocked_quit:
