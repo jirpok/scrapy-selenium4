@@ -23,4 +23,4 @@ class BaseScrapySeleniumTestCase(TestCase):
             "SELENIUM_DRIVER_NAME": "firefox",
             "SELENIUM_DRIVER_ARGUMENTS": ["-headless"],
         }
-        cls.spider_klass = cls.SimpleSpider
+        cls.spider_class = cls.SimpleSpider
