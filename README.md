@@ -7,11 +7,11 @@ All settings except `SELENIUM_DRIVER_NAME` are now optional. The middleware
 _should_ still work with existing Scrapy projects integrating the upstream
 package.
 
-# Requirements
+## Requirements
 
 Tested with `python3.12`. You will need a [Selenium 4 compatible browser](https://www.selenium.dev/documentation/webdriver/browsers/).
 
-# Installation
+## Installation
 
 With [Poetry](https://python-poetry.org/)
 
@@ -19,11 +19,11 @@ With [Poetry](https://python-poetry.org/)
 poetry add git+https://github.com/jirpok/scrapy-selenium4.git
 ```
 
-# Configuration
+## Configuration
 
 (Edge and Safari are also supported.)
 
-## Firefox
+### Firefox
 
 ```python
 SELENIUM_DRIVER_NAME = "firefox"
@@ -36,9 +36,9 @@ SELENIUM_BROWSER_FF_PREFS = {
 
 [Firefox/CommandLineOptions](https://wiki.mozilla.org/Firefox/CommandLineOptions)
 
-### Proxy settings
+#### Proxy settings
 
-#### SOCKS5
+##### SOCKS5
 
 ```python
 SELENIUM_BROWSER_FF_PREFS = {
@@ -49,10 +49,10 @@ SELENIUM_BROWSER_FF_PREFS = {
 }
 ```
 
-#### HTTP(S)
+##### HTTP(S)
 
 ```python
-"SELENIUM_BROWSER_FF_PREFS": {
+SELENIUM_BROWSER_FF_PREFS = {
     "network.proxy.type": 1,
     "network.proxy.http": "<HOST>",
     "network.proxy.http_port": <PORT>,
@@ -61,22 +61,22 @@ SELENIUM_BROWSER_FF_PREFS = {
 }
 ```
 
-## Chrome
+### Chrome
 
 ```python
 SELENIUM_DRIVER_NAME = "chrome"
 SELENIUM_DRIVER_ARGUMENTS=["--headless=new"]
 ```
 
-## Optional settings
+### Optional settings
 
-### Specify path to the browser executable
+#### Specify path to the browser executable
 
 ```python
 SELENIUM_BROWSER_EXECUTABLE_PATH = "path/to/browser/executable"
 ```
 
-### Specify path to the local driver
+#### Specify path to the local driver
 
 Selenium requires a driver ([GeckoDriver](https://github.com/mozilla/geckodriver/releases),
 [ChromeDriver](https://developer.chrome.com/docs/chromedriver), …) to interface
@@ -87,7 +87,7 @@ automatically handling these dependencies.
 SELENIUM_DRIVER_EXECUTABLE_PATH = "path/to/driver/executable"
 ```
 
-### Specify remote driver
+#### Specify remote driver
 
 ```python
 SELENIUM_COMMAND_EXECUTOR = "http://localhost:4444/wd/hub"
@@ -96,7 +96,7 @@ SELENIUM_COMMAND_EXECUTOR = "http://localhost:4444/wd/hub"
 (Do not set `SELENIUM_DRIVER_EXECUTABLE_PATH` along with
 `SELENIUM_COMMAND_EXECUTOR`.)
 
-## Include in `DOWNLOADER_MIDDLEWARE`
+### Include in `DOWNLOADER_MIDDLEWARE`
 
 ```python
 DOWNLOADER_MIDDLEWARES = {
@@ -104,7 +104,7 @@ DOWNLOADER_MIDDLEWARES = {
 }
 ```
 
-# Usage
+## Usage
 
 Use the `scrapy_selenium4.SeleniumRequest` instead of the scrapy built-in
 `Request`:
@@ -123,9 +123,9 @@ def parse(self, response):
     print(response.request.meta["driver"].title)
 ```
 
-## Additional arguments
+### Additional arguments
 
-### `wait_time`, `wait_until`
+#### `wait_time`, `wait_until`
 
 [Explicit wait](https://www.selenium.dev/documentation/webdriver/waits/#explicit-waits)
 before returning the response to the spider.
@@ -142,7 +142,7 @@ yield SeleniumRequest(
 )
 ```
 
-### `screenshot`
+#### `screenshot`
 
 Take a screenshot of the page and add the binary data of the captured .png to
 the response `meta`.
@@ -159,7 +159,7 @@ def parse(self, response):
         image_file.write(response.meta["screenshot"])
 ```
 
-### `script`
+#### `script`
 
 Execute custom JavaScript code.
 
@@ -171,7 +171,7 @@ yield SeleniumRequest(
 )
 ```
 
-# Dev
+## Dev
 
 Run tests
 
