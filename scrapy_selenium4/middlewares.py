@@ -1,8 +1,10 @@
-from typing import Any, List, Self, Dict
+from typing import Any, Dict, List, Self
+
 from scrapy import signals
 from scrapy.exceptions import NotConfigured
 from scrapy.http import HtmlResponse
 from selenium.webdriver.support.ui import WebDriverWait
+
 from .http import SeleniumRequest
 
 
@@ -18,25 +20,29 @@ class SeleniumMiddleware:
         browser_executable_path: str | None = None,
         command_executor: str | None = None,
     ) -> None:
-        """Initialize Selenium WebDriver.
-
+        """
         Parameters
         ----------
         driver_name : str
             Selenium `WebDriver` to use (`firefox`, `chrome`, `safari`,
             `edge`). Mapped to `SELENIUM_DRIVER_NAME`.
+
         driver_arguments : List[str] | None, optional
             A list of arguments for `WebDriver` initialization. Mapped
             to `SELENIUM_DRIVER_ARGUMENTS`. By default `None`.
+
         driver_executable_path : str | None, optional
             Path to driver executable binary. Mapped to
             `SELENIUM_DRIVER_EXECUTABLE_PATH`. By default `None`.
+
         browser_ff_prefs : Dict[str, Any] | None, optional
             Firefox preferences. Mapped to `SELENIUM_BROWSER_FF_PREFS`.
             By default `None`.
+
         browser_executable_path : str | None, optional
             Path to browser executable binary. Mapped to
             `SELENIUM_BROWSER_EXECUTABLE_PATH`. By default `None`.
+
         command_executor : str | None, optional
             Selenium remote server endpoint. Mapped to
             `SELENIUM_COMMAND_EXECUTOR`. By default `None`.
@@ -46,29 +52,21 @@ class SeleniumMiddleware:
         # import selected WebDriver
         match driver_name:
             case "firefox":
-                from selenium.webdriver import (
-                    Firefox as WebDriver,
-                    FirefoxOptions as Options,
-                    FirefoxService as Service,
-                )
+                from selenium.webdriver import Firefox as WebDriver
+                from selenium.webdriver import FirefoxOptions as Options
+                from selenium.webdriver import FirefoxService as Service
             case "chrome":
-                from selenium.webdriver import (
-                    Chrome as WebDriver,
-                    ChromeOptions as Options,
-                    ChromeService as Service,
-                )
+                from selenium.webdriver import Chrome as WebDriver
+                from selenium.webdriver import ChromeOptions as Options
+                from selenium.webdriver import ChromeService as Service
             case "safari":
-                from selenium.webdriver import (
-                    Safari as WebDriver,
-                    SafariOptions as Options,
-                    SafariService as Service,
-                )
+                from selenium.webdriver import Safari as WebDriver
+                from selenium.webdriver import SafariOptions as Options
+                from selenium.webdriver import SafariService as Service
             case "edge":
-                from selenium.webdriver import (
-                    Edge as WebDriver,
-                    EdgeOptions as Options,
-                    EdgeService as Service,
-                )
+                from selenium.webdriver import Edge as WebDriver
+                from selenium.webdriver import EdgeOptions as Options
+                from selenium.webdriver import EdgeService as Service
 
         options = Options()
 
@@ -90,8 +88,8 @@ class SeleniumMiddleware:
         # use remote driver
         if command_executor:
             from selenium.webdriver import Remote
-
-            self.driver = Remote(command_executor=command_executor, options=options)
+            self.driver = Remote(command_executor=command_executor,
+                                 options=options)
         # use local driver
         else:
             service = None
@@ -103,15 +101,13 @@ class SeleniumMiddleware:
 
     @classmethod
     def from_crawler(cls, crawler) -> Self:
-        """Initialize middleware."""
-
         driver_name = crawler.settings.get("SELENIUM_DRIVER_NAME")
         driver_arguments = crawler.settings.get("SELENIUM_DRIVER_ARGUMENTS")
-        driver_executable_path = crawler.settings.get("SELENIUM_DRIVER_EXECUTABLE_PATH")
+        driver_executable_path = crawler.settings.get(
+            "SELENIUM_DRIVER_EXECUTABLE_PATH")
         browser_ff_prefs = crawler.settings.get("SELENIUM_BROWSER_FF_PREFS")
         browser_executable_path = crawler.settings.get(
-            "SELENIUM_BROWSER_EXECUTABLE_PATH"
-        )
+            "SELENIUM_BROWSER_EXECUTABLE_PATH")
         command_executor = crawler.settings.get("SELENIUM_COMMAND_EXECUTOR")
 
         if driver_name is None:
@@ -120,8 +116,7 @@ class SeleniumMiddleware:
         if driver_executable_path and command_executor:
             raise NotConfigured(
                 "Either SELENIUM_DRIVER_EXECUTABLE_PATH "
-                "or SELENIUM_COMMAND_EXECUTOR must be set, but not both."
-            )
+                "or SELENIUM_COMMAND_EXECUTOR must be set, but not both.")
 
         if browser_ff_prefs and driver_name != "firefox":
             raise NotConfigured("SELENIUM_BROWSER_FF_PREFS is Firefox-only.")
@@ -135,11 +130,11 @@ class SeleniumMiddleware:
             command_executor=command_executor,
         )
 
-        crawler.signals.connect(middleware.spider_closed, signals.spider_closed)
+        crawler.signals.connect(middleware.spider_closed,
+                                signals.spider_closed)
         return middleware
 
-    def process_request(self, request, spider) -> None | HtmlResponse:
-        """Process request."""
+    def process_request(self, request, spider) -> HtmlResponse | None:
 
         if not isinstance(request, SeleniumRequest):
             return None
@@ -147,10 +142,14 @@ class SeleniumMiddleware:
         self.driver.get(request.url)
 
         for cookie_name, cookie_value in request.cookies.items():
-            self.driver.add_cookie({"name": cookie_name, "value": cookie_value})
+            self.driver.add_cookie({
+                "name": cookie_name,
+                "value": cookie_value
+            })
 
         if request.wait_until:
-            WebDriverWait(self.driver, request.wait_time).until(request.wait_until)
+            WebDriverWait(self.driver,
+                          request.wait_time).until(request.wait_until)
 
         if request.screenshot:
             request.meta["screenshot"] = self.driver.get_screenshot_as_png()
@@ -160,13 +159,14 @@ class SeleniumMiddleware:
 
         body = str.encode(self.driver.page_source)
 
-        # expose the driver via the `meta` attribute
+        # expose WebDriver in request meta
         request.meta.update({"driver": self.driver})
 
-        return HtmlResponse(
-            self.driver.current_url, body=body, encoding="utf-8", request=request
-        )
+        return HtmlResponse(self.driver.current_url,
+                            body=body,
+                            encoding="utf-8",
+                            request=request)
 
     def spider_closed(self) -> None:
-        """Shutdown the driver when spider is closed."""
+        """Shutdown WebDriver."""
         self.driver.quit()
