@@ -115,8 +115,8 @@ from scrapy_selenium4 import SeleniumRequest
 yield SeleniumRequest(url=url, callback=self.parse)
 ```
 
-Such request will have an additional `meta` key `driver` containing the Selenium
-driver with the request processed.
+The request will have an additional `meta` key `driver` containing the Selenium
+driver.
 
 ```python
 def parse(self, response):
