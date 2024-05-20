@@ -1,0 +1,11 @@
+{
+    "files.exclude": {
+        "**/__pycache__": true,
+        "**/.pytest_cache": true,
+        "**/.ruff_cache": true,
+    },
+    "python.envFile": "${workspaceFolder}/.env",
+    "black-formatter.args": ["--line-length", "79"],
+    "isort.args": ["--profile", "black"],
+    "pylint.args": ["--rcfile=${workspaceFolder}.pylintrc"],
+}
