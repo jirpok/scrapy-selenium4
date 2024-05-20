@@ -1,0 +1,7 @@
+[MESSAGES CONTROL]
+disable = fixme,missing-module-docstring,missing-class-docstring,missing-function-docstring,
+
+[MASTER]
+init-hook = 'import sys; sys.path.append(".")'
+; CPU cores to use
+jobs = 4
