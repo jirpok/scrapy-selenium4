@@ -1,0 +1,173 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "lint: flake8 + mccabe",
+            "detail": "Lint project with Flake8 + McCabe (complexity > 7)",
+            "type": "shell",
+            "command": "${command:python.interpreterPath}",
+            "args": ["-m", "flake8", "--max-complexity", "7", "--isolated", "${workspaceFolder}"],
+            "problemMatcher": {
+                "owner": "flake8",
+                "source": "flake8",
+                "fileLocation": "autoDetect",
+                "pattern": {
+                    "regexp": "^(.+):(\\d+):(\\d+): (\\w+) (.+)$",
+                    "file": 1,
+                    "line": 2,
+                    "column": 3,
+                    "code": 4,
+                    "message": 5
+                }
+            },
+            "group": {
+                "kind": "test",
+                "isDefault": false
+            }
+        },
+        {
+            "label": "lint: pycodestyle",
+            "detail": "Lint project with pycodestyle (formerly pep8)",
+            "type": "shell",
+            "command": "${command:python.interpreterPath}",
+            "args": ["-m", "pycodestyle", "${workspaceFolder}"],
+            "problemMatcher": {
+                "owner": "pycodestyle",
+                "source": "pycodestyle",
+                "fileLocation": "autoDetect",
+                "pattern": {
+                    "regexp": "^(.+):(\\d+):(\\d+): (\\w+) (.+)$",
+                    "file": 1,
+                    "line": 2,
+                    "column": 3,
+                    "code": 4,
+                    "message": 5
+                }
+            },
+            "group": {
+                "kind": "test",
+                "isDefault": false
+            }
+        },
+        {
+            "label": "lint: pylint",
+            "detail": "Lint project with Pylint",
+            "type": "shell",
+            "command": "${command:python.interpreterPath}",
+            "args": ["-m", "pylint", "${workspaceFolder}"],
+            "problemMatcher": {
+                "owner": "pylint",
+                "source": "pylint",
+                "fileLocation": "relative",
+                "pattern": {
+                    "regexp": "^(.+):(\\d+):(\\d+): (\\w+): (.+)$",
+                    "file": 1,
+                    "line": 2,
+                    "column": 3,
+                    "code": 4,
+                    "message": 5
+                }
+            },
+            "group": {
+                "kind": "test",
+                "isDefault": false
+            }
+        },
+        {
+            "label": "lint: ruff",
+            "detail": "Lint project with Ruff",
+            "type": "shell",
+            "command": "${command:python.interpreterPath}",
+            "args": ["-m", "ruff", "check", "${workspaceFolder}"],
+            "group": {
+                "kind": "test",
+                "isDefault": false
+            }
+        },
+        {
+            "label": "lint: vulture",
+            "detail": "Lint project with vulture",
+            "type": "shell",
+            "command": "${command:python.interpreterPath}",
+            "args": ["-m", "vulture", "${workspaceFolder}"],
+            "group": {
+                "kind": "test",
+                "isDefault": false
+            }
+        },
+        {
+            "label": "security: bandit",
+            "detail": "Scan project with Bandit",
+            "type": "shell",
+            "command": "${command:python.interpreterPath}",
+            "args": ["-m", "bandit", "-r", "${workspaceFolder}"],
+            "group": {
+                "kind": "test",
+                "isDefault": false
+            }
+        },
+        {
+            "label": "security: dodgy",
+            "detail": "Scan project with dodgy",
+            "type": "shell",
+            "command": "${command:python.interpreterPath}",
+            "args": ["-m", "dodgy"],
+            "group": {
+                "kind": "test",
+                "isDefault": false
+            }
+        },
+        {
+            "label": "lint: all",
+            "detail": "Run all linters",
+            "dependsOn": [
+                "lint: flake8 + mccabe",
+                "lint: pycodestyle",
+                "lint: pylint",
+                "lint: ruff",
+                "lint: vulture"
+            ],
+            "problemMatcher": []
+        },
+        {
+            "label": "docs: clear",
+            "detail": "Remove everything from docs except pdoc3_template",
+            "type": "shell",
+            "command": "find",
+            "args": [
+                "docs",
+                "-mindepth",
+                "1",
+                "-maxdepth",
+                "1",
+                "!",
+                "-name",
+                "\"pdoc3_template\"",
+                "-exec",
+                "rm",
+                "-r",
+                "{}",
+                "+"
+            ],
+            "problemMatcher": []
+        },
+
+        {
+            "label": "docs: generate (pdoc3)",
+            "type": "shell",
+            "command": "poetry",
+            "args": [
+                "run",
+                "pdoc",
+                "--html",
+                "--output-dir",
+                "${workspaceFolder}/docs", // destination dir
+                "${workspaceFolder}/scrapy_selenium4",
+                "--template-dir",
+                "${workspaceFolder}/docs/pdoc3_template",
+                "--force"
+            ],
+            "problemMatcher": []
+        }
+    ]
+}
