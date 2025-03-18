@@ -8,23 +8,22 @@ package-mode = true
 
 [tool.poetry.dependencies]
 python = "^3.12"
-selenium = "^4.19.0"
-Scrapy = "^2.11.1"
+selenium = "^4.29.0"
+Scrapy = "^2.12.0"
 
 [tool.poetry.group.test.dependencies]
-pytest = "^8.1.1"
-
+pytest = "^8.3.5"
 
 [tool.poetry.group.dev.dependencies]
 mccabe = "^0.7.0"
-flake8 = "^7.0.0"
-pycodestyle = "^2.11.1"
-pylint = "^3.2.2"
-bandit = "^1.7.8"
-ruff = "^0.4.4"
+flake8 = "^7.1.2"
+pycodestyle = "^2.12.1"
+pylint = "^3.3.5"
+bandit = "^1.8.3"
+ruff = "^0.11.0"
 dodgy = "^0.2.1"
-vulture = "^2.11"
-pdoc3 = "^0.10.0"
+vulture = "^2.14"
+pdoc3 = "^0.11.5"
 
 [build-system]
 requires = ["poetry-core"]
