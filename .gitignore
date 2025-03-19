@@ -98,3 +98,5 @@ ENV/
 
 # MACOS stuff
 .DS_Store
+
+docs/scrapy_selenium4
