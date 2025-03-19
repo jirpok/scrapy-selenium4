@@ -1,0 +1,3 @@
+[submodule "docs/pdoc3_template"]
+	path = docs/pdoc3_template
+	url = https://github.com/jirpok/pdoc3_template.git
